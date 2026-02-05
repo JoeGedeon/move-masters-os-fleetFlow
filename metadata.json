@@ -1,0 +1,8 @@
+{
+  "name": "Move Masters OS (Fleet Flow)",
+  "description": "An execution engine for logistics enforcement, ensuring 'Operational Honesty' through hard-coded financial and liability gates.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
