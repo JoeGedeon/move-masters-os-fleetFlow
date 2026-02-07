@@ -11,7 +11,7 @@ interface CalendarPanelProps {
 
 const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAddRequest }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  
+
   const isOperational = perspective === 'DRIVER' || perspective === 'HELPER' || perspective === 'OFFICE' || perspective === 'WAREHOUSE';
   const isClient = perspective === 'CLIENT';
 
@@ -22,8 +22,10 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
   const offset = firstDayOfMonth(selectedDate.getFullYear(), selectedDate.getMonth());
 
   const handleDateClick = (day: number) => {
+    const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dayEvents = getEventsForDay(day);
+
     if (isClient) {
-      const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const label = prompt("What kind of move are you requesting? (e.g., 2BR Apartment)");
       if (label) {
         onAddRequest({
@@ -34,6 +36,14 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
           status: 'PENDING'
         });
         alert("Request sent to Move Masters Hub. An agent will contact you shortly to confirm availability.");
+      }
+    } else {
+      // For operational staff, show day details
+      if (dayEvents.length > 0) {
+        const eventList = dayEvents.map(e => `• ${e.label} (${e.type})`).join('\n');
+        alert(`📅 ${dateStr}\n\nScheduled Events:\n${eventList}`);
+      } else {
+        alert(`📅 ${dateStr}\n\nNo events scheduled for this day.`);
       }
     }
   };
@@ -77,7 +87,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
           <div key={d} className="text-center text-[10px] font-black uppercase text-slate-500 py-2">{d}</div>
         ))}
-        
+
         {Array.from({ length: offset }).map((_, i) => (
           <div key={`offset-${i}`} className="h-32 bg-slate-900/20 rounded-xl border border-transparent" />
         ))}
@@ -86,8 +96,8 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
           const day = i + 1;
           const dayEvents = getEventsForDay(day);
           return (
-            <div 
-              key={day} 
+            <div
+              key={day}
               onClick={() => handleDateClick(day)}
               className={`h-32 p-3 rounded-2xl border transition-all cursor-pointer group flex flex-col gap-2
                 ${dayEvents.length > 0 ? 'bg-blue-600/5 border-blue-500/20' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}
@@ -128,7 +138,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
               ))
             )}
           </div>
-          
+
           <div className="p-6 glass-panel rounded-2xl border-t border-t-slate-700/50">
             <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
               <ShieldCheck className="w-3 h-3 text-green-400" /> Compliance Audit
@@ -150,7 +160,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({ perspective, events, onAd
               <MapPin className="w-3 h-3 text-red-400" /> Hub Logistics
             </h3>
             <p className="text-[10px] text-slate-400 leading-tight">
-              Warehouse capacity at <span className="text-white font-bold">68%</span>. 
+              Warehouse capacity at <span className="text-white font-bold">68%</span>.
               Dispatch recommending consolidation for Northeast routes on 06/22.
             </p>
           </div>
