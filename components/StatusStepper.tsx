@@ -8,10 +8,12 @@ export const STEPS = [
   { id: JobStatus.ARRIVED_ORIGIN, label: 'Arrival' },
   { id: JobStatus.SURVEY_WALKTHROUGH, label: 'Survey' },
   { id: JobStatus.BINDING_ESTIMATE, label: 'Rate Lock', gate: true },
+  { id: JobStatus.OFFICE_VERIFICATION, label: 'Review' },
   { id: JobStatus.CLIENT_APPROVAL, label: 'Signature', gate: true },
   { id: JobStatus.LOADING, label: 'Loading' },
   { id: JobStatus.LOAD_VERIFICATION, label: 'Evidence' },
   { id: JobStatus.IN_TRANSIT, label: 'Transit' },
+  { id: JobStatus.WAREHOUSE_CUSTODY, label: 'Vault' },
   { id: JobStatus.DESTINATION_GATE, label: 'Payment', gate: true },
   { id: JobStatus.UNLOADING, label: 'Unload' },
   { id: JobStatus.FINAL_AUDIT, label: 'Audit' },
@@ -31,7 +33,7 @@ const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus }) => {
       {STEPS.map((step, index) => {
         const isCompleted = index < currentIndex;
         const isActive = index === currentIndex;
-        
+
         return (
           <div key={step.id} className="relative z-10 flex flex-col items-center group">
             <div className={`
